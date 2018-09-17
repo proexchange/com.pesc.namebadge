@@ -1,5 +1,5 @@
 #  Name Badge Tools
-A few changes to make civi and Avery 5392 name badges work.
+A few changes to make CiviCRM and Avery 5392 name badges work.
 
 * 3x5 Paper Size
 * Name Badge Format
