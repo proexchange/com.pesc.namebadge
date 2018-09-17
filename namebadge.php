@@ -46,7 +46,7 @@ function namebadge_civicrm_uninstall() {
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_enable
  */
 function namebadge_civicrm_enable() {
-  _namebadge_civix_civicrm_enable();
+  _namebadge_civix_civicrm_enable();  
 }
 
 /**
