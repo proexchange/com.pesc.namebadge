@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<extension key="com.pesc.namebadge" type="module">
+  <file>namebadge</file>
+  <name>Name Badge Tools</name>
+  <description>A few changes to make civi and pesc name badges work. Includes a small file overwrite and custom fields</description>
+  <license>AGPL-3.0</license>
+  <maintainer>
+    <author>PESC</author>
+    <email>itdept@pesc.com</email>
+  </maintainer>
+  <urls>
+    <url desc="Licensing">http://www.gnu.org/licenses/agpl-3.0.html</url>
+  </urls>
+  <releaseDate>2018-09-17</releaseDate>
+  <version>0.1</version>
+  <develStage>alpha</develStage>
+  <compatibility>
+    <ver>4.2</ver>
+  </compatibility>
+  <civix>
+    <namespace>CRM/Namebadge</namespace>
+  </civix>
+</extension>
