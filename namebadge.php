@@ -161,6 +161,7 @@ function namebadge_civicrm_managed(&$entities) {
   $entities[] = array(
     'module' => 'com.pesc.namebadge',
     'entity' => 'CustomGroup',
+    'name' => "name_badge_fields",
     'params' => array(
       'version' => 3,
       'title' => "Name Badge Fields",
@@ -169,6 +170,7 @@ function namebadge_civicrm_managed(&$entities) {
       'collapse_display' => 1,
       'collapse_adv_display' => 1,
       'is_reserved' => "1",
+      'name' => "name_badge_fields",
     ),
   );
   $entities[] = array(
