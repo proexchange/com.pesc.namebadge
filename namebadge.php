@@ -232,6 +232,19 @@ function namebadge_civicrm_managed(&$entities) {
       'value' => '{"name":"Avery 5392","paper-size":"letter","metric":"in","lMargin":".25","tMargin":"1","NX":2,"NY":3,"SpaceX":".01","SpaceY":".1","width":4,"height":"2.9","font-size":12,"orientation":"portrait","font-name":"helvetica","font-style":"","lPadding":".05","tPadding":".05"}',
     ),
   );
+  $entities[] = array(
+    'module' => 'com.pesc.namebadge',
+    'entity' => 'Navigation',
+    'params' => array(
+      'version' => 3,
+      'name' => "event_name_badges",
+      'label' => "Event Name Badges",
+      'is_active' => 1,
+      'parent_id' => "Events",
+      'permission' => "access CiviEvent",
+      'url' => "civicrm/admin/badgelayout?reset=1",
+    ),
+  );
 }
 
 
