@@ -46,7 +46,7 @@ function namebadge_civicrm_uninstall() {
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_enable
  */
 function namebadge_civicrm_enable() {
-  _namebadge_civix_civicrm_enable();  
+  _namebadge_civix_civicrm_enable();
 }
 
 /**
@@ -250,41 +250,24 @@ function namebadge_civicrm_managed(&$entities) {
 
 function namebadge_civicrm_post($op, $objectName, $objectId, &$objectRef){
   if($objectName == 'Address' && ($op == 'edit' || $op == 'create') && $objectRef->is_primary){
-    $state = civicrm_api3('StateProvince', 'getsingle', [
-      'id' => $objectRef->state_province_id,
-    ]);
-    $country = civicrm_api3('Country', 'getsingle', [
-      'id' => $objectRef->country_id,
-    ]);
-    $field_city_state = civicrm_api3('CustomField', 'getsingle', [
-      'name' => 'city_state',
-    ]);
-    $field_state_country = civicrm_api3('CustomField', 'getsingle', [
-      'name' => 'state_country',
-    ]);
-    $contact = civicrm_api3('Contact', 'create', [
-      'id' => $objectRef->contact_id,
-      'custom_'.$field_city_state['id'] => $objectRef->city.', '.$state['abbreviation'],
-      'custom_'.$field_state_country['id'] => $state['name'].', '.$country['name'],
-    ]);
+    if(!empty($objectRef->contact_id)) {
+      $state = civicrm_api3('StateProvince', 'getsingle', [
+        'id' => $objectRef->state_province_id,
+      ]);
+      $country = civicrm_api3('Country', 'getsingle', [
+        'id' => $objectRef->country_id,
+      ]);
+      $field_city_state = civicrm_api3('CustomField', 'getsingle', [
+        'name' => 'city_state',
+      ]);
+      $field_state_country = civicrm_api3('CustomField', 'getsingle', [
+        'name' => 'state_country',
+      ]);
+      $contact = civicrm_api3('Contact', 'create', [
+        'id' => $objectRef->contact_id,
+        'custom_'.$field_city_state['id'] => $objectRef->city.', '.$state['abbreviation'],
+        'custom_'.$field_state_country['id'] => $state['name'].', '.$country['name'],
+      ]);
+    }
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
