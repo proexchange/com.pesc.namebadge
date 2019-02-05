@@ -215,6 +215,17 @@ function namebadge_civicrm_managed(&$entities) {
     'entity' => 'OptionValue',
     'params' => array(
       'version' => 3,
+      'option_group_id' => "paper_size",
+      'label' => "4.25x5.5",
+      'name' => "4.25x5.5",
+      'value' => '{"metric":"in","width":4.25,"height":5.5}',
+    ),
+  );
+  $entities[] = array(
+    'module' => 'com.pesc.namebadge',
+    'entity' => 'OptionValue',
+    'params' => array(
+      'version' => 3,
       'option_group_id' => "name_badge",
       'label' => "3x4 ( on 3x5)",
       'name' => "3x4 ( on 3x5)",
