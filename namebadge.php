@@ -245,6 +245,17 @@ function namebadge_civicrm_managed(&$entities) {
   );
   $entities[] = array(
     'module' => 'com.pesc.namebadge',
+    'entity' => 'OptionValue',
+    'params' => array(
+      'version' => 3,
+      'option_group_id' => "name_badge",
+      'label' => "PESC Name Badge",
+      'name' => "PESC Name Badge",
+      'value' => '{"name":"PESC Name Badge","paper-size":"4.25x5.5","metric":"in","lMargin":".1","tMargin":".1","NX":1,"NY":1,"SpaceX":".01","SpaceY":".01","width":"4.05","height":"5.3","font-size":12,"orientation":"portrait","font-name":"helvetica","font-style":"","lPadding":".01","tPadding":".01"}',
+    ),
+  );
+  $entities[] = array(
+    'module' => 'com.pesc.namebadge',
     'entity' => 'Navigation',
     'params' => array(
       'version' => 3,
