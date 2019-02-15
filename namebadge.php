@@ -158,6 +158,8 @@ function namebadge_civicrm_tokenValues(&$values, $cids, $job = null, $tokens = a
  */
 function namebadge_civicrm_managed(&$entities) {
   _namebadge_civix_civicrm_managed($entities);
+
+  // City, State Fields
   $entities[] = array(
     'module' => 'com.pesc.namebadge',
     'entity' => 'CustomGroup',
@@ -167,9 +169,9 @@ function namebadge_civicrm_managed(&$entities) {
       'title' => "Name Badge Fields",
       'extends' => "Contact",
       'style' => "Inline",
-      'collapse_display' => 1,
+      'collapse_display' => 0,
       'collapse_adv_display' => 1,
-      'is_reserved' => "1",
+      'is_reserved' => 0,
       'name' => "name_badge_fields",
     ),
   );
@@ -178,11 +180,11 @@ function namebadge_civicrm_managed(&$entities) {
     'entity' => 'CustomField',
     'params' => array(
       'version' => 3,
-      'custom_group_id' => "Name_Badge_Fields",
+      'custom_group_id' => "name_badge_fields",
       'name' => "city_state",
       'label' => "City, State",
       'data_type' => "String",
-      'is_view' => 1,
+      'is_view' => 0,
       'html_type' => "Text",
     ),
   );
@@ -191,14 +193,66 @@ function namebadge_civicrm_managed(&$entities) {
     'entity' => 'CustomField',
     'params' => array(
       'version' => 3,
-      'custom_group_id' => "Name_Badge_Fields",
+      'custom_group_id' => "name_badge_fields",
       'name' => "state_country",
       'label' => "State, Country",
       'data_type' => "String",
-      'is_view' => 1,
+      'is_view' => 0,
       'html_type' => "Text",
     ),
   );
+
+  // Name Badge Name 
+  $entities[] = array(
+    'module' => 'com.pesc.namebadge',
+    'entity' => 'CustomField',
+    'params' => array(
+      'version' => 3,
+      'custom_group_id' => "name_badge_fields",
+      'name' => "name_badge_name",
+      'label' => "Name Badge Name",
+      'data_type' => "String",
+      'html_type' => "Text",
+      'is_view' => 0,
+      'is_searchable' => 1,
+    ),
+  );
+
+  //Name Badge Ribbon
+  $entities[] = array(
+    'module' => 'com.pesc.namebadge',
+    'entity' => 'CustomGroup',
+    'name' => "name_badge_fields_participant",
+    'params' => array(
+      'version' => 3,
+      'title' => "Name Badge Fields (Participant)",
+      'extends' => "Participant",
+      'style' => "Inline",
+      'collapse_display' => 0,
+      'collapse_adv_display' => 1,
+      'is_reserved' => "0",
+      'name' => "name_badge_fields_participant",
+    ),
+  );
+  $entities[] = array(
+    'module' => 'com.pesc.namebadge',
+    'entity' => 'CustomField',
+    'params' => array(
+      'version' => 3,
+      'custom_group_id' => "name_badge_fields_participant",
+      'name' => "name_badge_ribbon",
+      'label' => "Name Badge Ribbon",
+      'data_type' => "String",
+      'html_type' => "Select",
+      'is_view' => 0,
+      'is_searchable' => 1,
+    ),
+  );
+
+
+
+
+  // Paper Sizes
   $entities[] = array(
     'module' => 'com.pesc.namebadge',
     'entity' => 'OptionValue',
@@ -251,7 +305,7 @@ function namebadge_civicrm_managed(&$entities) {
       'option_group_id' => "name_badge",
       'label' => "PESC Name Badge",
       'name' => "PESC Name Badge",
-      'value' => '{"name":"PESC Name Badge","paper-size":"4.25x5.5","metric":"in","lMargin":".1","tMargin":".1","NX":1,"NY":1,"SpaceX":".01","SpaceY":".01","width":"4.05","height":"5.3","font-size":12,"orientation":"portrait","font-name":"helvetica","font-style":"","lPadding":".01","tPadding":".01"}',
+      'value' => '{"name":"PESC Name Badge","paper-size":"4.25x5.5","metric":"in","lMargin":".1","tMargin":".1","NX":1,"NY":1,"SpaceX":"0","SpaceY":"0","width":"4.05","height":"5.3","font-size":12,"orientation":"portrait","font-name":"helvetica","font-style":"","lPadding":"0","tPadding":"0"}',
     ),
   );
   $entities[] = array(
@@ -269,16 +323,50 @@ function namebadge_civicrm_managed(&$entities) {
   );
 }
 
+//Simplyfy qr code 'domain|participantID|ContactID'
 
+function namebadge_civicrm_alterBarcode(&$data, $type, $context ) {
+  if ($context == 'name_badge') {
+    // change the encoding of barcode
+    $url = parse_url($data['current_value']);
+    $data['current_value'] = $url['host'].'|'.$data['participant_id'].'|'.$data['contact_id'];
+  }
+}
+
+// create name badge location fields
 function namebadge_civicrm_post($op, $objectName, $objectId, &$objectRef){
   if($objectName == 'Address' && ($op == 'edit' || $op == 'create') && $objectRef->is_primary){
+
     if(!empty($objectRef->contact_id)) {
-      $state = civicrm_api3('StateProvince', 'getsingle', [
-        'id' => $objectRef->state_province_id,
-      ]);
-      $country = civicrm_api3('Country', 'getsingle', [
-        'id' => $objectRef->country_id,
-      ]);
+
+      //state
+      $statename = '';
+      $stateabv = '';
+      if(!empty($objectRef->state_province_id)){
+        $state = civicrm_api3('StateProvince', 'getsingle', [
+          'id' => $objectRef->state_province_id,
+        ]);
+        $statename = $state['name'].', ';
+        $stateabv = ', '.$state['abbreviation'];
+      }
+
+      //country
+      $countryname = "";
+      if(!empty($address['country_id'])){
+        $country = civicrm_api3('Country', 'getsingle', [
+          'id' => $address['country_id'],
+        ]);
+        $countryname = $country['name'];
+      }
+
+      $countryname = "";
+      if(!empty($objectRef->country_id)){
+        $country = civicrm_api3('Country', 'getsingle', [
+          'id' => $objectRef->country_id,
+        ]);
+        $countryname = $country['name'];
+      }
+
       $field_city_state = civicrm_api3('CustomField', 'getsingle', [
         'name' => 'city_state',
       ]);
@@ -287,9 +375,32 @@ function namebadge_civicrm_post($op, $objectName, $objectId, &$objectRef){
       ]);
       $contact = civicrm_api3('Contact', 'create', [
         'id' => $objectRef->contact_id,
-        'custom_'.$field_city_state['id'] => $objectRef->city.', '.$state['abbreviation'],
-        'custom_'.$field_state_country['id'] => $state['name'].', '.$country['name'],
+        'custom_'.$field_city_state['id'] => $objectRef->city.$stateabv,
+        'custom_'.$field_state_country['id'] => $statename.$countryname,
       ]);
     }
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

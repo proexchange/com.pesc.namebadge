@@ -69,6 +69,7 @@ class CRM_Badge_BAO_Badge {
 
     foreach ($participants as $participant) {
       $formattedRow = self::formatLabel($participant, $layoutInfo);
+
       $this->pdf->AddPdfLabel($formattedRow);
     }
 
@@ -239,9 +240,12 @@ class CRM_Badge_BAO_Badge {
     ));
 
     $rowCount = CRM_Badge_Form_Layout::FIELD_ROWCOUNT;
+
     for ($i = 1; $i <= $rowCount; $i++) {
       if (!empty($formattedRow['token'][$i]['token'])) {
+
         $value = '';
+
         if ($formattedRow['token'][$i]['token'] != 'spacer') {
           $value = $formattedRow['token'][$i]['value'];
         }
@@ -258,8 +262,37 @@ class CRM_Badge_BAO_Badge {
 
         $this->pdf->SetFont($formattedRow['token'][$i]['font_name'], $formattedRow['token'][$i]['font_style'],
           $formattedRow['token'][$i]['font_size']);
-        $this->pdf->MultiCell($rowWidth, 0, $value,
+
+        //Fix Style and Positioning for PESC Name Badge Ribbon
+        if($i==6 && $this->pdf->formatName=='PESC Name Badge' && !empty($value)){
+          //get ribbon options from custom fields and selected value
+          $optionValueGroup = civicrm_api3('OptionGroup', 'getsingle', [
+            'title' => "Name Badge Ribbon",
+          ]);
+
+          $nameBadgeRibbon = civicrm_api3('OptionValue', 'getsingle', [
+            'option_group_id' => $optionValueGroup['id'],
+            'label' => $value,
+          ]);
+
+          //convert hex color value to RGB 
+          list($red, $green, $blue) = sscanf($nameBadgeRibbon['value'], "%02x%02x%02x");
+
+          //set color bg and white text
+          $this->pdf->SetFillColor($red, $green, $blue);
+          $this->pdf->SetTextColor(255, 255, 255);
+          $this->pdf->MultiCell($rowWidth, 15, $value,
+            $this->border, $formattedRow['token'][$i]['text_alignment'], 1, 1, 
+            $xAlign, 121, true, 0, false, true, 15, 'M');
+          //back to defaults - set bg white black text
+          $this->pdf->SetTextColor(0, 0, 0);
+          $this->pdf->SetFillColor(255, 255, 255);
+        }else{
+          //Original
+          $xAlign = $xAlign-2.54;
+          $this->pdf->MultiCell($rowWidth, 0, $value, 
           $this->border, $formattedRow['token'][$i]['text_alignment'], 0, 1, $xAlign, $offset);
+        }
 
         // set this to zero so that it is added only for first element
         $startOffset = 0;
@@ -338,7 +371,7 @@ class CRM_Badge_BAO_Badge {
             break;
 
           case 'C':
-            $xAlign += 29;
+            $xAlign += 26;
             break;
         }
 
@@ -351,8 +384,14 @@ class CRM_Badge_BAO_Badge {
           'position' => '',
         );
 
-        $this->pdf->write2DBarcode($data['current_value'], 'QRCODE,H', $xAlign, $y + $this->pdf->height - 26, 30,
-          30, $style, 'B');
+        //Fix QR Code positioning for PESC Name Badges
+        if($this->pdf->formatName=='PESC Name Badge'){
+          $y = -35;
+          $xAlign += 5;
+        }
+
+
+        $this->pdf->write2DBarcode($data['current_value'], 'QRCODE,H', $xAlign, $y + $this->pdf->height - 26, 40, 40, $style, 'B');
       }
     }
   }
