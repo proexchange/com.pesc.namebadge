@@ -338,69 +338,51 @@ function namebadge_civicrm_post($op, $objectName, $objectId, &$objectRef){
   if($objectName == 'Address' && ($op == 'edit' || $op == 'create') && $objectRef->is_primary){
 
     if(!empty($objectRef->contact_id)) {
+      try {
+        //state
+        $statename = '';
+        $stateabv = '';
+        if(!empty($objectRef->state_province_id)){
+          $state = civicrm_api3('StateProvince', 'getsingle', [
+            'id' => $objectRef->state_province_id,
+          ]);
+          $statename = $state['name'].', ';
+          $stateabv = ', '.$state['abbreviation'];
+        }
 
-      //state
-      $statename = '';
-      $stateabv = '';
-      if(!empty($objectRef->state_province_id)){
-        $state = civicrm_api3('StateProvince', 'getsingle', [
-          'id' => $objectRef->state_province_id,
+        //country
+        $countryname = "";
+        if(!empty($address['country_id'])){
+          $country = civicrm_api3('Country', 'getsingle', [
+            'id' => $address['country_id'],
+          ]);
+          $countryname = $country['name'];
+        }
+
+        $countryname = "";
+        if(!empty($objectRef->country_id)){
+          $country = civicrm_api3('Country', 'getsingle', [
+            'id' => $objectRef->country_id,
+          ]);
+          $countryname = $country['name'];
+        }
+
+        $field_city_state = civicrm_api3('CustomField', 'getsingle', [
+          'name' => 'city_state',
         ]);
-        $statename = $state['name'].', ';
-        $stateabv = ', '.$state['abbreviation'];
-      }
-
-      //country
-      $countryname = "";
-      if(!empty($address['country_id'])){
-        $country = civicrm_api3('Country', 'getsingle', [
-          'id' => $address['country_id'],
+        $field_state_country = civicrm_api3('CustomField', 'getsingle', [
+          'name' => 'state_country',
         ]);
-        $countryname = $country['name'];
+        $contact = civicrm_api3('Contact', 'create', [
+          'id' => $objectRef->contact_id,
+          'custom_'.$field_city_state['id'] => $objectRef->city.$stateabv,
+          'custom_'.$field_state_country['id'] => $statename.$countryname,
+        ]);    
       }
-
-      $countryname = "";
-      if(!empty($objectRef->country_id)){
-        $country = civicrm_api3('Country', 'getsingle', [
-          'id' => $objectRef->country_id,
-        ]);
-        $countryname = $country['name'];
+      catch(Exception $e) {
+        watchdog('com.pesc.namebadge', "Unable to update namebadge custom fields.\n" . $e->getMessage());
+        watchdog('com.pesc.namebadge', "<pre>objectName: $objectName\nop: $op\nobjectRef: " . print_r($objectRef, 1) . "</pre>");
       }
-
-      $field_city_state = civicrm_api3('CustomField', 'getsingle', [
-        'name' => 'city_state',
-      ]);
-      $field_state_country = civicrm_api3('CustomField', 'getsingle', [
-        'name' => 'state_country',
-      ]);
-      $contact = civicrm_api3('Contact', 'create', [
-        'id' => $objectRef->contact_id,
-        'custom_'.$field_city_state['id'] => $objectRef->city.$stateabv,
-        'custom_'.$field_state_country['id'] => $statename.$countryname,
-      ]);
     }
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
