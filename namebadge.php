@@ -281,6 +281,13 @@ function namebadge_civicrm_alterBarcode(&$data, $type, $context ) {
   }
 }
 
+function namebadge_civicrm_alterBadge($labelName, &$label, &$format, &$participant) {
+  foreach($format['token'] as $key => $value) {
+     if(empty($value['value']) && $value['token'] != 'spacer') {
+       unset($format['token'][$key]);
+     }
+   }
+}
 /*
 function namebadge_civicrm_post($op, $objectName, $objectId, &$objectRef){
   if($objectName == 'Address' && ($op == 'edit' || $op == 'create') && $objectRef->is_primary){
