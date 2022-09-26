@@ -204,64 +204,64 @@ function namebadge_civicrm_managed(&$entities) {
   $entities[] = array(
     'module' => 'com.pesc.namebadge',
     'entity' => 'OptionValue',
+    'name' => "3x5",
     'params' => array(
       'version' => 3,
       'option_group_id' => "paper_size",
       'label' => "3x5",
-      'name' => "3x5",
       'value' => '{"metric":"in","width":5,"height":3}',
     ),
   );
   $entities[] = array(
     'module' => 'com.pesc.namebadge',
     'entity' => 'OptionValue',
+    'name' => "4.25x5.5",
     'params' => array(
       'version' => 3,
       'option_group_id' => "paper_size",
       'label' => "4.25x5.5",
-      'name' => "4.25x5.5",
       'value' => '{"metric":"in","width":4.25,"height":5.5}',
     ),
   );
   $entities[] = array(
     'module' => 'com.pesc.namebadge',
     'entity' => 'OptionValue',
+    'name' => "3x4 ( on 3x5)",
     'params' => array(
       'version' => 3,
       'option_group_id' => "name_badge",
       'label' => "3x4 ( on 3x5)",
-      'name' => "3x4 ( on 3x5)",
       'value' => '{"name":"3x4 Name Badge","paper-size":"3x5","metric":"in","lMargin":".1","tMargin":".1","NX":1,"NY":1,"SpaceX":".01","SpaceY":".01","width":"3.8","height":"2.8","font-size":12,"orientation":"landscape","font-name":"helvetica","font-style":"","lPadding":".01","tPadding":".01"}',
     ),
   );
   $entities[] = array(
     'module' => 'com.pesc.namebadge',
     'entity' => 'OptionValue',
+    'name' => "Avery 5392",
     'params' => array(
       'version' => 3,
       'option_group_id' => "name_badge",
       'label' => "Avery 5392",
-      'name' => "Avery 5392",
       'value' => '{"name":"Avery 5392","paper-size":"letter","metric":"in","lMargin":".25","tMargin":"1","NX":2,"NY":3,"SpaceX":".01","SpaceY":".1","width":4,"height":"2.9","font-size":12,"orientation":"portrait","font-name":"helvetica","font-style":"","lPadding":".05","tPadding":".05"}',
     ),
   );
   $entities[] = array(
     'module' => 'com.pesc.namebadge',
     'entity' => 'OptionValue',
+    'name' => "PESC Name Badge",
     'params' => array(
       'version' => 3,
       'option_group_id' => "name_badge",
       'label' => "PESC Name Badge",
-      'name' => "PESC Name Badge",
       'value' => '{"name":"PESC Name Badge","paper-size":"4.25x5.5","metric":"in","lMargin":".1","tMargin":".1","NX":1,"NY":1,"SpaceX":".01","SpaceY":".01","width":"4.05","height":"5.3","font-size":12,"orientation":"portrait","font-name":"helvetica","font-style":"","lPadding":".01","tPadding":".01"}',
     ),
   );
   $entities[] = array(
     'module' => 'com.pesc.namebadge',
     'entity' => 'Navigation',
+    'name' => "event_name_badges",
     'params' => array(
       'version' => 3,
-      'name' => "event_name_badges",
       'label' => "Event Name Badges",
       'is_active' => 1,
       'parent_id' => "Events",
